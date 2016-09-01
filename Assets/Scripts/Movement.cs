@@ -67,12 +67,6 @@ public class Movement : MonoBehaviour
         if (InPhysics)
         {
             RunPhysics();
-
-            // If our physics are done, push state
-            if (!InPhysics)
-            {
-                undoes.Do();
-            }
         }
         else
         {
@@ -135,6 +129,7 @@ public class Movement : MonoBehaviour
 
             if (TestMovement())
             {
+                undoes.Do();
                 Moving = true;
                 break;
             }
@@ -319,32 +314,31 @@ public class Movement : MonoBehaviour
     {
         if (HasAttachments)
         {
+            undoes.Do();
+
             foreach (var block in Blocks)
             {
                 block.gameObject.GetComponent<Attachable>().Detach();
             }
 
             Blocks.Clear();
-
-            undoes.Do();
             CheckPhysics();
         }
         else
         {
             var attachables = FindObjectsOfType<Attachable>();
 
-            foreach (var attachable in attachables)
-            {
-                if (Vector3.Distance(transform.position, attachable.transform.position) <= 1.1f)
-                {
-                    attachable.Attach();
-                    Blocks.Add(attachable.transform);
-                }
-            }
+            var nearAttachables = attachables.Where(attachable => Vector3.Distance(transform.position, attachable.transform.position) <= 1.1f).ToList();
 
-            if (HasAttachments)
+            if (nearAttachables.Count > 0)
             {
                 undoes.Do();
+
+                foreach (var nearAttachable in nearAttachables)
+                {
+                    nearAttachable.Attach();
+                    Blocks.Add(nearAttachable.transform);
+                }
             }
         }
     }

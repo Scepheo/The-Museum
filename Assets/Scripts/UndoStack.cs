@@ -2,39 +2,34 @@
 
 public class UndoStack
 {
-    private Stack<GameState> undoes;
-    private bool undoing;
+    private Stack<GameState> gameStates;
     private GameState startState;
 
     public UndoStack()
     {
-        undoes = new Stack<GameState>();
-        undoing = false;
+        gameStates = new Stack<GameState>();
         startState = GameState.Make();
+        gameStates.Push(startState);
     }
 
+    /// <summary>
+    /// Pops the last gamestate and applies it.
+    /// </summary>
     public void Undo()
     {
-        if (undoes.Count > 0)
+        if (gameStates.Count > 0)
         {
-            if (undoes.Count > 1 && !undoing)
-            {
-                undoes.Pop();
-                undoing = true;
-            }
-
-            var state = undoes.Pop();
+            var state = gameStates.Pop();
             state.Apply();
-        }
-        else
-        {
-            startState.Apply();
         }
     }
 
+    /// <summary>
+    /// Pushes the current gamestate onto the stack. Should be called before any movement.
+    /// </summary>
     public void Do()
     {
-        undoing = false;
-        undoes.Push(GameState.Make());
+        var newGameState = GameState.Make();
+        gameStates.Push(newGameState);
     }
 }
