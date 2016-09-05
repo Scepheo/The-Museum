@@ -13,9 +13,11 @@ public class Movement : MonoBehaviour
     public bool Falling { get; private set; }
 
     private bool active = true;
+
     public bool Active
     {
         get { return active; }
+
         set
         {
             GetComponent<MeshRenderer>().enabled = value;
@@ -48,6 +50,8 @@ public class Movement : MonoBehaviour
 
     private UndoStack undoes;
 
+    private Renderer _renderer;
+
     private void Start()
     {
         Blocks = new List<Transform>();
@@ -55,6 +59,9 @@ public class Movement : MonoBehaviour
 
         // Create undo stack
         undoes = new UndoStack();
+
+        // Assign components
+        _renderer = GetComponent<Renderer>();
     }
 
     private void Update()
@@ -424,13 +431,14 @@ public class Movement : MonoBehaviour
         FallingBlocks.Clear();
 
         // Check if we are on the ground
-        if (transform.position.y < -5f)
+        if (!_renderer.isVisible)
         {
             Active = false;
         }
         else if (Active)
         {
             transform.position += Vector3.down;
+
             foreach (var block in Blocks)
             {
                 block.position += Vector3.down;
@@ -439,6 +447,7 @@ public class Movement : MonoBehaviour
             Falling = !CheckCollisions();
 
             transform.position += Vector3.up;
+
             foreach (var block in Blocks)
             {
                 block.position += Vector3.up;
@@ -451,7 +460,7 @@ public class Movement : MonoBehaviour
         foreach (var loose in looses)
         {
             // Check if falling out of level
-            if (loose.transform.position.y < -5f)
+            if (!loose.IsVisible)
             {
                 loose.gameObject.SetActive(false);
             }

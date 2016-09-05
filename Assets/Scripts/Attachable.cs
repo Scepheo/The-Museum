@@ -7,22 +7,27 @@ public class Attachable : MonoBehaviour
 
     public bool IsAttached { get; private set; }
 
-    private MeshRenderer meshRenderer;
+    private Renderer _renderer;
 
     private void Start()
     {
-        meshRenderer = GetComponent<MeshRenderer>();
+        _renderer = GetComponent<Renderer>();
     }
 
     public void Attach()
     {
         IsAttached = true;
-        meshRenderer.material = AttachedMaterial;
+        _renderer.material = AttachedMaterial;
     }
 
     public void Detach()
     {
         IsAttached = false;
-        meshRenderer.material = UnattachedMaterial;
+        _renderer.material = UnattachedMaterial;
+    }
+
+    public bool IsVisible
+    {
+        get { return _renderer.isVisible; }
     }
 }
