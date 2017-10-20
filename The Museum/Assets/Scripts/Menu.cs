@@ -12,8 +12,8 @@ public class Menu : MonoBehaviour
     {
         startNewGame = true;
 
-        newGame = transform.FindChild("New Game").GetComponent<Text>();
-        continueGame = transform.FindChild("Continue").GetComponent<Text>();
+        newGame = transform.Find("New Game").GetComponent<Text>();
+        continueGame = transform.Find("Continue").GetComponent<Text>();
 
         active = newGame.color;
         inactive = continueGame.color;
